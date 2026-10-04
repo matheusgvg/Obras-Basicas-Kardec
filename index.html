@@ -110,6 +110,64 @@
       box-shadow: var(--shadow);
     }
 
+    .welcome-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 235px;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .welcome-copy { min-width: 0; }
+
+    .welcome-art {
+      position: relative;
+      min-height: 340px;
+      margin: 0;
+      isolation: isolate;
+    }
+
+    .art-image {
+      position: absolute;
+      display: block;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, .22);
+      background: linear-gradient(145deg, #58518e, #24213f);
+      box-shadow: 0 18px 40px rgba(5, 4, 19, .4);
+      object-fit: cover;
+    }
+
+    .art-image-space {
+      inset: 0 0 30px 20px;
+      width: calc(100% - 20px);
+      height: calc(100% - 30px);
+      border-radius: 28px;
+    }
+
+    .art-image-library {
+      z-index: 1;
+      right: 22px;
+      bottom: 0;
+      width: 64%;
+      height: 43%;
+      border-radius: 21px;
+      object-position: center;
+    }
+
+    .art-caption {
+      position: absolute;
+      z-index: 2;
+      top: 18px;
+      left: 0;
+      padding: 9px 12px;
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 12px;
+      color: var(--ink);
+      background: rgba(23, 21, 47, .76);
+      font-size: .72rem;
+      font-weight: 750;
+      backdrop-filter: blur(12px);
+    }
+
     .welcome::after {
       position: absolute;
       right: -45px;
@@ -402,6 +460,15 @@
     .final-score strong { font-size: 2rem; }
     footer { padding: 0 0 22px; color: #8f89a8; font-size: .76rem; text-align: center; }
 
+    .footer-credit {
+      color: var(--mint);
+      font-weight: 750;
+      text-decoration: none;
+      text-underline-offset: 3px;
+    }
+
+    .footer-credit:hover { text-decoration: underline; }
+
     button:focus-visible {
       outline: 3px solid var(--gold);
       outline-offset: 3px;
@@ -413,9 +480,21 @@
       .top-note { font-size: .65rem; }
       main { padding: 12px 0 34px; }
       .welcome { border-radius: 23px; }
+      .welcome-layout { grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; }
+      .welcome-art { min-height: 150px; align-self: end; }
+      .art-image-space { inset: 0 0 14px 7px; width: calc(100% - 7px); height: calc(100% - 14px); border-radius: 16px; }
+      .art-image-library { right: 5px; width: 68%; height: 42%; border-radius: 12px; }
+      .art-caption { top: 7px; left: 0; padding: 6px 7px; border-radius: 9px; font-size: .59rem; }
       .question-card { border-radius: 20px; }
       .choice { min-height: 55px; padding: 10px 12px; }
       .choice-name { font-size: .87rem; }
+    }
+
+    @media (max-width: 380px) {
+      .welcome-layout { grid-template-columns: minmax(0, 1fr); }
+      .welcome-art { min-height: 125px; }
+      .art-image-space { inset: 0 22% 0 0; width: 78%; height: 100%; }
+      .art-image-library { right: 0; bottom: 0; width: 48%; height: 70%; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -432,15 +511,24 @@
 
     <main>
       <section id="start-screen" class="screen welcome" aria-labelledby="main-title">
-        <p class="eyebrow"><span aria-hidden="true">✷</span> Um desafio para a Pré-Mocidade</p>
-        <h1 id="main-title">Desafio das Obras Básicas <span>📚✨</span></h1>
-        <p class="intro">Cada pergunta traz uma situação da vida. Você consegue descobrir qual obra de Kardec pode ajudar a iluminar essa conversa?</p>
-        <div class="welcome-meta" aria-label="Sobre o jogo">
-          <span class="meta-pill">⏱ 8 perguntas</span>
-          <span class="meta-pill">💡 Aprenda a cada resposta</span>
-          <span class="meta-pill">🌱 Sem pressão: é para descobrir!</span>
+        <div class="welcome-layout">
+          <div class="welcome-copy">
+            <p class="eyebrow"><span aria-hidden="true">✷</span> Um desafio para a Pré-Mocidade</p>
+            <h1 id="main-title">Desafio das Obras Básicas <span>📚✨</span></h1>
+            <p class="intro">Cada pergunta traz uma situação da vida. Você consegue descobrir qual obra de Kardec pode ajudar a iluminar essa conversa?</p>
+            <div class="welcome-meta" aria-label="Sobre o jogo">
+              <span class="meta-pill">⏱ 8 perguntas</span>
+              <span class="meta-pill">💡 Aprenda a cada resposta</span>
+              <span class="meta-pill">🌱 Sem pressão: é para descobrir!</span>
+            </div>
+            <button id="start-button" class="primary-button" type="button">Iniciar Jogo <span aria-hidden="true">→</span></button>
+          </div>
+          <figure class="welcome-art" aria-label="Imagens de uma biblioteca e do céu estrelado">
+            <img class="art-image art-image-space" src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&amp;fit=crop&amp;w=650&amp;q=75" alt="Céu noturno estrelado, lembrando a vastidão do universo" loading="lazy" onerror="this.hidden=true">
+            <img class="art-image art-image-library" src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&amp;fit=crop&amp;w=450&amp;q=75" alt="Estantes de livros em uma biblioteca" loading="lazy" onerror="this.hidden=true">
+            <figcaption class="art-caption">Ideias que iluminam ✨</figcaption>
+          </figure>
         </div>
-        <button id="start-button" class="primary-button" type="button">Iniciar Jogo <span aria-hidden="true">→</span></button>
       </section>
 
       <section id="game-screen" class="screen game" aria-label="Rodada do jogo" hidden>
@@ -477,7 +565,13 @@
       </section>
     </main>
 
-    <footer>Uma jornada de curiosidade pelas cinco Obras Básicas de Allan Kardec.</footer>
+    <footer>
+      Uma jornada de curiosidade pelas cinco Obras Básicas de Allan Kardec.
+      <span aria-hidden="true">·</span>
+      Feito por <a class="footer-credit" href="https://github.com/matheusgvg" target="_blank" rel="noopener noreferrer">Matheus Gustavo <span aria-hidden="true">↗</span></a>
+      <span aria-hidden="true">·</span>
+      Imagens via <a class="footer-credit" href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a>
+    </footer>
   </div>
 
   <script>

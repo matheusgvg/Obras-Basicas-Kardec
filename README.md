@@ -15,6 +15,7 @@ Em cada rodada, leia um dilema e escolha qual obra pode ajudar a explorar aquele
 - 🔁 **Jogue novamente** para rever as perguntas e tentar uma pontuação maior.
 - 📱 **Interface responsiva**, pensada para celulares e tablets.
 - 🔊 **Feedback sonoro** opcional durante as respostas.
+- 🌌 **Imagens de livros e do universo**, carregadas do Unsplash.
 
 ## 📖 As cinco obras
 
@@ -31,6 +32,8 @@ O jogo está em um único arquivo HTML, sem bibliotecas, instalação ou servido
 1. Baixe ou clone este repositório.
 2. Abra `index.html` em um navegador moderno.
 3. Clique em **Iniciar Jogo** e divirta-se!
+
+> As imagens decorativas são carregadas do Unsplash e precisam de conexão com a internet. O jogo continua funcionando se elas não estiverem disponíveis.
 
 ## ☁️ Publicar na Vercel
 
@@ -70,5 +73,7 @@ Depois de conectar o repositório, cada novo push para a branch principal gera u
 O jogo é um convite à curiosidade e ao estudo. As explicações são resumos introdutórios para apoiar a atividade e não substituem a leitura das obras nem o diálogo com educadores.
 
 ---
+
+Desenvolvido por [Matheus Gustavo](https://github.com/matheusgvg). Imagens: [Unsplash](https://unsplash.com).
 
 Feito para aprender com curiosidade, respeito e vontade de compartilhar. 🌱
