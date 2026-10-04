@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17152f">
+  <meta name="description" content="Um jogo educativo para descobrir qual das Obras Básicas do Espiritismo conversa com cada dilema do dia a dia.">
+  <title>Desafio das Obras Básicas</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f8f5ff;
+      --muted: #b7b1ce;
+      --night: #17152f;
+      --panel: #211e40;
+      --panel-light: #2a2650;
+      --line: rgba(226, 220, 255, .13);
+      --mint: #72e6bf;
+      --violet: #a99bff;
+      --coral: #ff8c91;
+      --gold: #ffd57a;
+      --shadow: 0 24px 80px rgba(5, 4, 19, .35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 14% 8%, rgba(115, 91, 210, .19), transparent 36rem),
+        radial-gradient(ellipse at 92% 82%, rgba(76, 191, 162, .1), transparent 34rem),
+        var(--night);
+      font-family: Inter, ui-rounded, "Segoe UI", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(100% - 40px, 860px);
+      min-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 26px 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-size: .9rem;
+      font-weight: 750;
+      letter-spacing: .015em;
+    }
+
+    .brand-icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid rgba(169, 155, 255, .35);
+      border-radius: 12px;
+      background: rgba(169, 155, 255, .12);
+      font-size: 1.05rem;
+    }
+
+    .top-note {
+      color: var(--muted);
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      align-items: center;
+      padding: 20px 0 56px;
+    }
+
+    .screen { width: 100%; animation: appear .42s ease both; }
+    [hidden] { display: none !important; }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .welcome {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(30px, 7vw, 66px);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 90% 12%, rgba(169, 155, 255, .16), transparent 18rem),
+        linear-gradient(145deg, rgba(42, 38, 80, .98), rgba(31, 28, 60, .98));
+      box-shadow: var(--shadow);
+    }
+
+    .welcome::after {
+      position: absolute;
+      right: -45px;
+      bottom: -103px;
+      width: 250px;
+      height: 250px;
+      border: 1px solid rgba(169, 155, 255, .12);
+      border-radius: 50%;
+      box-shadow: 0 0 0 24px rgba(169, 155, 255, .025), 0 0 0 50px rgba(169, 155, 255, .025);
+      content: "";
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 20px;
+      color: var(--mint);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    .welcome h1 {
+      max-width: 610px;
+      margin-bottom: 16px;
+      font-size: clamp(2.25rem, 7vw, 4.35rem);
+      line-height: 1.06;
+      letter-spacing: -.055em;
+    }
+
+    .welcome h1 span { color: var(--gold); }
+
+    .intro {
+      max-width: 510px;
+      margin-bottom: 28px;
+      color: #c8c3da;
+      font-size: clamp(1rem, 2.5vw, 1.12rem);
+      line-height: 1.7;
+    }
+
+    .welcome-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 30px;
+    }
+
+    .meta-pill {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #ded9ed;
+      background: rgba(255, 255, 255, .04);
+      font-size: .82rem;
+    }
+
+    .primary-button {
+      display: inline-flex;
+      min-height: 54px;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 23px;
+      border: 0;
+      border-radius: 15px;
+      color: #17152f;
+      background: var(--mint);
+      box-shadow: 0 9px 24px rgba(114, 230, 191, .18);
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 850;
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+    }
+
+    .primary-button:hover { transform: translateY(-2px); filter: brightness(1.04); box-shadow: 0 12px 28px rgba(114, 230, 191, .23); }
+    .primary-button:active { transform: translateY(0); }
+
+    .game { width: 100%; max-width: 720px; margin: 0 auto; }
+
+    .game-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .round-count {
+      margin: 0;
+      color: #d5d0e5;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    .round-count strong { color: var(--ink); }
+
+    .score {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 13px;
+      border: 1px solid rgba(255, 213, 122, .22);
+      border-radius: 13px;
+      color: var(--gold);
+      background: rgba(255, 213, 122, .08);
+      font-size: .88rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      height: 7px;
+      overflow: hidden;
+      margin-bottom: 25px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .09);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--violet), var(--mint));
+      transition: width .35s ease;
+    }
+
+    .question-card {
+      padding: clamp(23px, 5vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(42, 38, 80, .94), rgba(31, 28, 60, .96));
+      box-shadow: var(--shadow);
+    }
+
+    .question-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 13px;
+      color: var(--violet);
+      font-size: .75rem;
+      font-weight: 850;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .question-text {
+      margin: 0;
+      font-size: clamp(1.25rem, 3.8vw, 1.72rem);
+      line-height: 1.48;
+      letter-spacing: -.025em;
+    }
+
+    .answer-heading {
+      margin: 23px 0 12px;
+      color: #c8c3da;
+      font-size: .83rem;
+      font-weight: 700;
+    }
+
+    .choices { display: grid; gap: 10px; }
+
+    .choice {
+      display: flex;
+      width: 100%;
+      min-height: 57px;
+      align-items: center;
+      gap: 13px;
+      padding: 11px 15px;
+      border: 1px solid rgba(226, 220, 255, .14);
+      border-radius: 15px;
+      color: #f1eef8;
+      background: rgba(255, 255, 255, .035);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+
+    .choice:not(:disabled):hover {
+      transform: translateY(-1px);
+      border-color: rgba(169, 155, 255, .72);
+      background: rgba(169, 155, 255, .09);
+    }
+
+    .choice:disabled { cursor: default; }
+
+    .choice-mark {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 30px;
+      place-items: center;
+      border: 1px solid rgba(226, 220, 255, .18);
+      border-radius: 10px;
+      color: var(--violet);
+      background: rgba(169, 155, 255, .08);
+      font-size: 1rem;
+    }
+
+    .choice-name { font-size: .94rem; font-weight: 700; line-height: 1.35; }
+
+    .choice.correct {
+      border-color: rgba(114, 230, 191, .75);
+      color: #d5fff0;
+      background: rgba(42, 177, 133, .17);
+    }
+
+    .choice.correct .choice-mark {
+      border-color: rgba(114, 230, 191, .4);
+      color: #14291f;
+      background: var(--mint);
+    }
+
+    .choice.incorrect {
+      border-color: rgba(255, 140, 145, .78);
+      color: #ffe0e1;
+      background: rgba(214, 78, 89, .16);
+    }
+
+    .choice.incorrect .choice-mark {
+      border-color: rgba(255, 140, 145, .4);
+      color: #31151d;
+      background: var(--coral);
+    }
+
+    .feedback {
+      margin-top: 17px;
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .045);
+      animation: appear .25s ease both;
+    }
+
+    .feedback.correct-feedback { border-color: rgba(114, 230, 191, .29); background: rgba(42, 177, 133, .085); }
+    .feedback.incorrect-feedback { border-color: rgba(255, 140, 145, .25); background: rgba(214, 78, 89, .075); }
+
+    .feedback-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 7px;
+      color: var(--mint);
+      font-size: .94rem;
+      font-weight: 850;
+    }
+
+    .incorrect-feedback .feedback-title { color: var(--coral); }
+    .feedback-copy { margin: 0; color: #d6d1e4; font-size: .9rem; line-height: 1.6; }
+    .feedback-copy strong { color: var(--ink); }
+
+    .next-row { display: flex; justify-content: flex-end; margin-top: 15px; }
+    .next-button { min-height: 48px; padding: 0 18px; font-size: .92rem; }
+
+    .result-card {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: clamp(32px, 8vw, 64px);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 94% 0, rgba(169, 155, 255, .15), transparent 17rem),
+        linear-gradient(145deg, rgba(42, 38, 80, .98), rgba(31, 28, 60, .98));
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .result-icon { margin-bottom: 17px; font-size: 3.4rem; }
+    .result-card h2 { margin-bottom: 12px; font-size: clamp(1.8rem, 6vw, 2.7rem); letter-spacing: -.04em; }
+    .result-copy { max-width: 420px; margin: 0 auto 24px; color: #c8c3da; line-height: 1.65; }
+
+    .final-score {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 7px;
+      margin-bottom: 28px;
+      padding: 13px 22px;
+      border: 1px solid rgba(255, 213, 122, .25);
+      border-radius: 16px;
+      color: var(--gold);
+      background: rgba(255, 213, 122, .08);
+      font-weight: 850;
+    }
+
+    .final-score strong { font-size: 2rem; }
+    footer { padding: 0 0 22px; color: #8f89a8; font-size: .76rem; text-align: center; }
+
+    button:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 520px) {
+      .page { width: min(100% - 28px, 860px); }
+      .topbar { padding: 18px 0; }
+      .top-note { font-size: .65rem; }
+      main { padding: 12px 0 34px; }
+      .welcome { border-radius: 23px; }
+      .question-card { border-radius: 20px; }
+      .choice { min-height: 55px; padding: 10px 12px; }
+      .choice-name { font-size: .87rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">✦</span> Clube da descoberta</div>
+      <div class="top-note">Aprender • refletir • compartilhar</div>
+    </header>
+
+    <main>
+      <section id="start-screen" class="screen welcome" aria-labelledby="main-title">
+        <p class="eyebrow"><span aria-hidden="true">✷</span> Um desafio para a Pré-Mocidade</p>
+        <h1 id="main-title">Desafio das Obras Básicas <span>📚✨</span></h1>
+        <p class="intro">Cada pergunta traz uma situação da vida. Você consegue descobrir qual obra de Kardec pode ajudar a iluminar essa conversa?</p>
+        <div class="welcome-meta" aria-label="Sobre o jogo">
+          <span class="meta-pill">⏱ 8 perguntas</span>
+          <span class="meta-pill">💡 Aprenda a cada resposta</span>
+          <span class="meta-pill">🌱 Sem pressão: é para descobrir!</span>
+        </div>
+        <button id="start-button" class="primary-button" type="button">Iniciar Jogo <span aria-hidden="true">→</span></button>
+      </section>
+
+      <section id="game-screen" class="screen game" aria-label="Rodada do jogo" hidden>
+        <div class="game-header">
+          <p class="round-count" id="round-count">Pergunta <strong>1</strong> de 8</p>
+          <div class="score" aria-live="polite"><span aria-hidden="true">✦</span> <span>Pontos:</span> <strong id="score">0</strong></div>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Progresso do jogo" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <div class="question-card">
+          <div class="question-label"><span aria-hidden="true">✧</span> Dilema / situação</div>
+          <h2 id="question-text" class="question-text"></h2>
+          <p class="answer-heading">Qual obra você escolheria?</p>
+          <div id="choices" class="choices" role="group" aria-label="Escolha uma Obra Básica"></div>
+          <div id="feedback" class="feedback" role="status" aria-live="polite" hidden>
+            <p id="feedback-title" class="feedback-title"></p>
+            <p id="feedback-copy" class="feedback-copy"></p>
+          </div>
+          <div id="next-row" class="next-row" hidden>
+            <button id="next-button" class="primary-button next-button" type="button">Próxima Pergunta <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section id="result-screen" class="screen result-card" aria-labelledby="result-title" hidden>
+        <div id="result-icon" class="result-icon" aria-hidden="true">🌟</div>
+        <p class="eyebrow" style="justify-content:center">Fim do desafio!</p>
+        <h2 id="result-title">Mandou bem!</h2>
+        <p id="result-copy" class="result-copy"></p>
+        <div class="final-score"><strong id="final-score">0</strong><span>de 8 pontos</span></div>
+        <br>
+        <button id="restart-button" class="primary-button" type="button">Jogar Novamente <span aria-hidden="true">↻</span></button>
+      </section>
+    </main>
+
+    <footer>Uma jornada de curiosidade pelas cinco Obras Básicas de Allan Kardec.</footer>
+  </div>
+
+  <script>
+    "use strict";
+
+    const works = [
+      { name: "O Livro dos Espíritos", symbol: "✧" },
+      { name: "O Livro dos Médiuns", symbol: "☼" },
+      { name: "O Evangelho segundo o Espiritismo", symbol: "♡" },
+      { name: "O Céu e o Inferno", symbol: "☾" },
+      { name: "A Gênese", symbol: "✷" }
+    ];
+
+    const questions = [
+      {
+        prompt: "Estou com dúvidas sobre o que acontece com a gente depois que morremos e se existe um “inferno” com penas eternas.",
+        answers: [3],
+        explanation: "Explica a justiça divina, ajuda a compreender que não existem penas eternas e apresenta como os espíritos vivem no além."
+      },
+      {
+        prompt: "Um amigo me chateou muito na escola e estou com dificuldade de perdoar. Onde encontro orientações sobre o perdão e a caridade?",
+        answers: [2],
+        explanation: "Traz a explicação moral dos ensinamentos de Jesus e mostra como praticar o amor, o perdão e a caridade no dia a dia."
+      },
+      {
+        prompt: "Quero entender quem é Deus, de onde viemos, para onde vamos e o que são as Leis Morais.",
+        answers: [0],
+        explanation: "É a base da Doutrina Espírita: aborda as grandes perguntas da humanidade em forma de perguntas e respostas."
+      },
+      {
+        prompt: "Sinto intuições fortes e às vezes escuto pensamentos que parecem não ser meus. Onde aprendo sobre sintonia e comunicação entre os mundos?",
+        answers: [1],
+        explanation: "É o guia teórico e prático sobre a mediunidade e a relação entre o mundo corporal e o mundo espiritual."
+      },
+      {
+        prompt: "Dizem que o mundo foi criado em 7 dias, mas a ciência fala do Big Bang. Onde o Espiritismo explica a criação do Universo e os milagres?",
+        answers: [4],
+        explanation: "Estuda a criação do mundo e os chamados milagres, propondo uma reflexão sobre como fé e leis naturais podem dialogar."
+      },
+      {
+        prompt: "Quero entender por que algumas pessoas passam por tantas dificuldades na vida enquanto outras parecem ter tudo fácil.",
+        answers: [0, 3],
+        explanation: "O Livro dos Espíritos aborda as Leis Morais e as provas da vida; O Céu e o Inferno reflete sobre justiça divina e consequências dos atos. Ambas ajudam a estudar reencarnação e causa e efeito."
+      },
+      {
+        prompt: "Por que devemos orar pelos nossos amigos e familiares que já desencarnaram?",
+        answers: [2],
+        explanation: "Aborda o valor da prece, inclusive por quem já desencarnou, como expressão de amor, apoio e confiança em Deus."
+      },
+      {
+        prompt: "Tenho medo de espíritos e assombrações. Como posso entender melhor esse assunto e diminuir esse medo?",
+        answers: [1],
+        explanation: "Estuda a mediunidade e o mundo espiritual com seriedade, ajudando a compreender que os espíritos são pessoas sem o corpo físico."
+      }
+    ];
+
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen = document.getElementById("game-screen");
+    const resultScreen = document.getElementById("result-screen");
+    const questionText = document.getElementById("question-text");
+    const choices = document.getElementById("choices");
+    const feedback = document.getElementById("feedback");
+    const feedbackTitle = document.getElementById("feedback-title");
+    const feedbackCopy = document.getElementById("feedback-copy");
+    const nextRow = document.getElementById("next-row");
+    const scoreText = document.getElementById("score");
+    const progressFill = document.getElementById("progress-fill");
+    const progressTrack = document.querySelector(".progress-track");
+    const roundCount = document.getElementById("round-count");
+
+    let questionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    function showScreen(screen) {
+      startScreen.hidden = screen !== startScreen;
+      gameScreen.hidden = screen !== gameScreen;
+      resultScreen.hidden = screen !== resultScreen;
+    }
+
+    function startGame() {
+      questionIndex = 0;
+      score = 0;
+      scoreText.textContent = "0";
+      showScreen(gameScreen);
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const question = questions[questionIndex];
+      answered = false;
+      roundCount.innerHTML = "Pergunta <strong>" + (questionIndex + 1) + "</strong> de " + questions.length;
+      questionText.textContent = question.prompt;
+      feedback.hidden = true;
+      nextRow.hidden = true;
+      choices.replaceChildren();
+
+      works.forEach(function (work, index) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "choice";
+        button.dataset.workIndex = String(index);
+
+        const mark = document.createElement("span");
+        mark.className = "choice-mark";
+        mark.setAttribute("aria-hidden", "true");
+        mark.textContent = work.symbol;
+        const name = document.createElement("span");
+        name.className = "choice-name";
+        name.textContent = work.name;
+        button.append(mark, name);
+        button.addEventListener("click", function () { selectAnswer(index); });
+        choices.append(button);
+      });
+
+      const progress = (questionIndex / questions.length) * 100;
+      progressFill.style.width = progress + "%";
+      progressTrack.setAttribute("aria-valuenow", String(questionIndex));
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (answered) return;
+      answered = true;
+      const question = questions[questionIndex];
+      const isCorrect = question.answers.includes(selectedIndex);
+      const buttons = choices.querySelectorAll(".choice");
+
+      buttons.forEach(function (button, index) {
+        button.disabled = true;
+        if (question.answers.includes(index)) {
+          button.classList.add("correct");
+          button.querySelector(".choice-mark").textContent = "✓";
+        }
+        if (index === selectedIndex && !isCorrect) {
+          button.classList.add("incorrect");
+          button.querySelector(".choice-mark").textContent = "×";
+        }
+      });
+
+      if (isCorrect) {
+        score += 1;
+        scoreText.textContent = String(score);
+        feedback.className = "feedback correct-feedback";
+        feedbackTitle.textContent = "✨ Isso aí! Você acertou!";
+        playTone(true);
+      } else {
+        feedback.className = "feedback incorrect-feedback";
+        feedbackTitle.textContent = "💡 Boa tentativa! A resposta está destacada.";
+        playTone(false);
+      }
+
+      const correctNames = question.answers.map(function (index) { return works[index].name; });
+      feedbackCopy.replaceChildren();
+      const answerLine = document.createElement("span");
+      answerLine.textContent = correctNames.length > 1 ? "As respostas aceitas são: " : "A obra é ";
+      const answerStrong = document.createElement("strong");
+      answerStrong.textContent = correctNames.join(" e ");
+      const explanation = document.createElement("span");
+      explanation.textContent = ". " + question.explanation;
+      feedbackCopy.append(answerLine, answerStrong, explanation);
+      feedback.hidden = false;
+      nextRow.hidden = false;
+      document.getElementById("next-button").focus();
+    }
+
+    function playTone(isCorrect) {
+      const AudioContextType = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextType) return;
+      try {
+        const context = new AudioContextType();
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.value = isCorrect ? 660 : 245;
+        gain.gain.setValueAtTime(0.0001, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.08, context.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.19);
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start();
+        oscillator.stop(context.currentTime + 0.2);
+        oscillator.addEventListener("ended", function () { context.close(); }, { once: true });
+      } catch (error) {
+        console.warn("Não foi possível tocar o feedback sonoro.", error);
+      }
+    }
+
+    function nextQuestion() {
+      questionIndex += 1;
+      if (questionIndex < questions.length) {
+        renderQuestion();
+        questionText.setAttribute("tabindex", "-1");
+        questionText.focus();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById("final-score").textContent = String(score);
+      const title = document.getElementById("result-title");
+      const copy = document.getElementById("result-copy");
+      const icon = document.getElementById("result-icon");
+
+      if (score === 8) {
+        title.textContent = "Mestre da Codificação!";
+        copy.textContent = "Você conectou todas as situações às obras. Que tal compartilhar o que descobriu com alguém?";
+        icon.textContent = "🏆";
+      } else if (score >= 5) {
+        title.textContent = "Muito bem! Continue estudando!";
+        copy.textContent = "Você já conhece bastante das Obras Básicas. Cada leitura traz uma nova descoberta!";
+        icon.textContent = "🌟";
+      } else if (score >= 2) {
+        title.textContent = "Boa jornada de descobertas!";
+        copy.textContent = "Você está começando a explorar as obras. Jogue de novo e veja quantas conexões consegue fazer!";
+        icon.textContent = "🌱";
+      } else {
+        title.textContent = "Toda descoberta começa com curiosidade!";
+        copy.textContent = "Agora você já conheceu um pouquinho de cada obra. Que tal tentar mais uma vez?";
+        icon.textContent = "🔎";
+      }
+      progressFill.style.width = "100%";
+      progressTrack.setAttribute("aria-valuenow", String(questions.length));
+      showScreen(resultScreen);
+    }
+
+    document.getElementById("start-button").addEventListener("click", startGame);
+    document.getElementById("next-button").addEventListener("click", nextQuestion);
+    document.getElementById("restart-button").addEventListener("click", startGame);
+  </script>
+</body>
+</html>
